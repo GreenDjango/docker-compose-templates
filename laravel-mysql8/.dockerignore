@@ -1,0 +1,68 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+/vendor
+.composer.lock
+
+# Testing
+/coverage
+
+# Production
+/build
+/dist
+/public/hot
+/public/storage
+/storage/*.key
+
+# Dockerfile
+.dockerignore
+docker-compose.yml
+Dockerfile
+
+# Git
+.git
+.gitattributes
+.gitignore
+
+# Force use npm
+yarn.lock
+
+# Local env files
+.env
+.env.example
+.env.backup
+.env.local
+.env.*.local
+
+# misc
+README.md
+.editorconfig
+.styleci.yml
+.DS_Store
+commit.txt
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and files
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# packages
+*.7z
+*.rar
+*.tar
+*.zip

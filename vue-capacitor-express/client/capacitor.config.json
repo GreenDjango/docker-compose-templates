@@ -1,0 +1,14 @@
+{
+  "appId": "com.docker.app",
+  "appName": "App",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "linuxAndroidStudioPath": "/android-studio/bin/studio.sh",
+  "cordova": {}
+}

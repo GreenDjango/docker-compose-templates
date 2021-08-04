@@ -1,0 +1,19 @@
+{
+  "name": "app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "npx vue-cli-service serve",
+    "build": "npx vue-cli-service build",
+    "android": "npx cap sync android && npx cap open android",
+    "sync": "npm run build --silent && npx cap sync android",
+    "lint": "npx vue-cli-service lint"
+  },
+  "dependencies": {
+    "@capacitor/android": "^2.4.6"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^2.4.6",
+    "@capacitor/core": "^2.4.6"
+  }
+}
