@@ -35,6 +35,8 @@ See [Docker Compose Documentation](https://docs.docker.com/compose/).
 
 ## Templates files
 
+See [awesome-compose](https://github.com/docker/awesome-compose) for more.
+
 |**Status**|**Name**|**Description**|
 |:---:|:---:|:---|
 |WIP|[**laravel-mysql8**](laravel-mysql8)|Php Laravel with mysql8 and phpmyadmin.
