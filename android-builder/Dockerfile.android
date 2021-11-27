@@ -1,0 +1,98 @@
+# https://github.com/mingchen/docker-android-build-box
+# https://github.com/phatnhse/android-container
+FROM ubuntu:18.04
+
+ENV ANDROID_HOME="/opt/android-sdk" \
+    JAVA_HOME="/usr/lib/jvm/java-8-openjdk-amd64/"
+
+# Get the latest version from https://developer.android.com/studio/index.html
+ENV ANDROID_SDK_TOOLS_VERSION="4333796" \
+    GRADLE_VERSION="7.0"
+
+# nodejs version
+ENV NODE_VERSION="14.x"
+
+ENV DEBIAN_FRONTEND="noninteractive" \
+    TERM=dumb \
+    DEBIAN_FRONTEND=noninteractive
+
+# Variables must be references after they are created
+ENV ANDROID_SDK_HOME="$ANDROID_HOME"
+ENV PATH="$JAVA_HOME/bin:$PATH:$ANDROID_SDK_HOME/emulator:$ANDROID_SDK_HOME/tools/bin:$ANDROID_SDK_HOME/tools:$ANDROID_SDK_HOME/platform-tools"
+
+WORKDIR /tmp
+
+# Installing packages
+RUN echo "installing packages" && \
+    apt-get update -qq > /dev/null && \
+    apt-get install -qq --no-install-recommends \
+        autoconf \
+        build-essential \
+        curl \
+        file \
+        git \
+        gpg-agent \
+        less \
+        openjdk-8-jdk \
+        openjdk-11-jdk \
+        openssh-client \
+        unzip \
+        wget \
+        zip \
+        zlib1g-dev > /dev/null
+
+RUN echo "nodejs, npm, capacitor" && \
+    curl -sL -k https://deb.nodesource.com/setup_${NODE_VERSION} \
+        | bash - > /dev/null && \
+    apt-get install -qq nodejs > /dev/null && \
+    npm install --quiet -g npm > /dev/null
+
+RUN echo "clear cache" && \
+    apt-get clean > /dev/null && \
+    rm -rf /var/lib/apt/lists/ && \
+    npm cache clean --force > /dev/null && \
+    rm -rf /tmp/* /var/tmp/*
+
+# Install Android SDK
+RUN echo "sdk tools ${ANDROID_SDK_TOOLS_VERSION}" && \
+    wget --quiet --output-document=sdk-tools.zip \
+        "https://dl.google.com/android/repository/sdk-tools-linux-${ANDROID_SDK_TOOLS_VERSION}.zip" && \
+    mkdir --parents "$ANDROID_HOME" && \
+    unzip -q sdk-tools.zip -d "$ANDROID_HOME" && \
+    rm --force sdk-tools.zip
+
+# Install SDKs
+# Please keep these in descending order!
+# The `yes` is for accepting all non-standard tool licenses.
+RUN mkdir --parents "$ANDROID_HOME/.android/" && mkdir --parents "$HOME/.android/" && \
+    echo '### User Sources for Android SDK Manager' > "$ANDROID_HOME/.android/repositories.cfg" && \
+    echo '### User Sources for Android SDK Manager' > "$HOME/.android/repositories.cfg" && \
+    yes | "$ANDROID_HOME"/tools/bin/sdkmanager --licenses > /dev/null
+
+ARG ANDROID_VERSION="android-30"
+ARG ANDROID_BUILD_TOOLS_VERSION="30.0.2"
+ARG ANDROID_SDK_PACKAGES="platforms;${ANDROID_VERSION} platform-tools build-tools;${ANDROID_BUILD_TOOLS_VERSION}"
+
+RUN yes | "$ANDROID_HOME"/tools/bin/sdkmanager --verbose --no_https ${ANDROID_SDK_PACKAGES}
+
+# Install Gradle
+RUN echo "gradle ${GRADLE_VERSION}" && \
+    wget --quiet -O sdk.install.sh "https://get.sdkman.io" && \
+    bash -c "bash ./sdk.install.sh > /dev/null && source ~/.sdkman/bin/sdkman-init.sh > /dev/null && sdk install gradle ${GRADLE_VERSION} > /dev/null" && \
+    rm -f sdk.install.sh
+
+RUN echo "clear cache" && \
+    rm -rf /tmp/* /var/tmp/*
+
+# Get Capacitor project
+COPY --from=builder /build /project
+
+WORKDIR /project/android
+
+# Build APK
+RUN ./gradlew assembleDebug
+
+RUN mkdir -p /dist && \
+    cp ./app/build/outputs/apk/debug/app-debug.apk /dist/client.apk
+
+RUN ls -la /dist/client.apk
