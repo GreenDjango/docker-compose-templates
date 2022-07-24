@@ -31,6 +31,15 @@ services:
     # - 80:8080
     # - 443:4433
 
+  mailer:
+    image: namshi/smtp:latest
+    restart: unless-stopped
+    # volumes:
+    #  - ./:/web
+    #environment:
+    #  CERTIFICATE_PATH: /etc/letsencrypt/archive/xxx/fullchain1.pem
+    #  KEY_PATH: /etc/letsencrypt/archive/xxx/privkey1.pem
+
 volumes:
   database_volume:
   gpg_volume:
