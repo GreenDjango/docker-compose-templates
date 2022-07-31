@@ -1,0 +1,31 @@
+services:
+  nexus3:
+    image: sonatype/nexus3:3.41.0
+    container_name: nexus3
+    restart: unless-stopped
+    expose:
+      - 8081
+    volumes:
+      - nexus-data:/nexus-data
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    environment:
+      - ADMIN_USER=${CADDY_ADMIN_USER}
+      - ADMIN_PASSWORD=${CADDY_ADMIN_PASSWORD}
+      - ADMIN_PASSWORD_HASH=${CADDY_ADMIN_PASSWORD_HASH}
+      - SITE_ADDRESS=${SITE_ADDRESS:-localhost}
+
+volumes:
+  nexus-data:
+  caddy_data:
+  caddy_config:

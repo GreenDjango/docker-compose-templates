@@ -34,6 +34,7 @@ See [Docker Compose Documentation](https://docs.docker.com/compose/).
 |✅|[**harbor**](harbor)|Harbor is an open source registry for Docker and Kubernetes that secures artifacts with policies and role-based access control.
 |WIP|[**laravel-mysql8**](laravel-mysql8)|Php Laravel with mysql8 and phpmyadmin.
 |✅|[**nextjs**](nextjs)|Hybrid static & server rendering with next.js react framework.
+|✅|[**nexus-repository-3**](nexus-repository-3)|Nexus Repository delivers universal support for package managers and formats (like npm, apt, docker, nuget...).
 |✅|[**nginx-pwa**](nginx-pwa)|Static PWA (vue, react, svelte...) serve with nginx.
 |✅|[**passbolt**](passbolt)|Passbolt is an open source password manager designed for team collaboration. Securely generate, store, manage and monitor your team credentials.
 |✅|[**rust-postgres**](rust-postgres)|Rust server build with postgres db.

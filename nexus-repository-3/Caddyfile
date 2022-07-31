@@ -1,0 +1,6 @@
+{$SITE_ADDRESS} {
+	basicauth /* {
+		{$ADMIN_USER} {$ADMIN_PASSWORD_HASH}
+	}
+	reverse_proxy nexus3:8081
+}
