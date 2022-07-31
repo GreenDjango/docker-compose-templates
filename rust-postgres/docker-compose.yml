@@ -1,0 +1,43 @@
+services:
+  api-db:
+    image: postgres:14-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${API_DB_USER} -d ${API_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - backend
+    ports:
+      - "5555:5432"
+    volumes:
+      - api-db-postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${API_DB_USER}
+      - POSTGRES_PASSWORD=${API_DB_PASSWORD}
+      - POSTGRES_DB=${API_DB_NAME}
+
+  api:
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    hostname: localhost
+    depends_on:
+      api-db:
+        condition: service_healthy
+    networks:
+      - backend
+    ports:
+      - 8888:80
+    environment:
+      - DATABASE_URL=postgresql://${API_DB_USER}:${API_DB_PASSWORD}@api-db:5432/${API_DB_NAME}
+      - HOST=localhost
+      - PORT=80
+
+networks:
+  backend:
+
+volumes:
+  api-db-postgres:

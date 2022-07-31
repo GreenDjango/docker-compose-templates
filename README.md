@@ -29,9 +29,10 @@ See [Docker Compose Documentation](https://docs.docker.com/compose/).
 
 |**Status**|**Name**|**Description**|
 |:---:|:---:|:---|
-|✅|[**android-builder**](android-builder)|Android APK builder (with capacitorjs).
+|✅|[**android-builder**](android-builder)|Android APK builder (with capacitorjs or flutter).
 |✅|[**elixir-postgres**](elixir-postgres)|Elixir app build with postgres db.
 |WIP|[**laravel-mysql8**](laravel-mysql8)|Php Laravel with mysql8 and phpmyadmin.
+|✅|[**rust-postgres**](rust-postgres)|Rust server build with postgres db.
 |✅|[**passbolt**](passbolt)|Passbolt is an open source password manager designed for team collaboration. Securely generate, store, manage and monitor your team credentials.
 |✅|[**tinyhttpd**](tinyhttpd)|thttpd, for tiny/turbo/throttling HTTP server, is a simple, small (~1MB), portable, fast, and secure HTTP server.
 |✅|[**vue-capacitor-express**](vue-capacitor-express)|Node.js builder and nginx static vue.js serve. Android app generate via capacitor from vue.js. Express.js build and serve with node.js.
