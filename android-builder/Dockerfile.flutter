@@ -1,0 +1,75 @@
+###
+#   Build steps
+###
+FROM fischerscode/flutter:2.10.5 AS builder
+
+ENV USER="flutter"
+ENV USER_GRP="flutter"
+ENV JAVA_VERSION="8"
+ENV ANDROID_TOOLS_URL="https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip"
+ENV ANDROID_SDK_ROOT="/home/$USER/android"
+ENV PATH="$ANDROID_SDK_ROOT/cmdline-tools/tools/bin:$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/platforms:$PATH"
+
+USER root
+
+# Install all dependencies
+ENV DEBIAN_FRONTEND="noninteractive"
+RUN apt-get update \
+  && apt-get install --yes --no-install-recommends openjdk-$JAVA_VERSION-jdk curl unzip sed git bash xz-utils libglvnd0 ssh xauth x11-xserver-utils libpulse0 libxcomposite1 libgl1-mesa-glx sudo \
+  && rm -rf /var/lib/{apt,dpkg,cache,log}
+
+USER $USER:$USER_GRP
+WORKDIR /home/$USER
+
+# Android sdk
+RUN mkdir -p $ANDROID_SDK_ROOT \
+  && mkdir -p /home/$USER/.android \
+  && touch /home/$USER/.android/repositories.cfg \
+  && curl -o android_tools.zip $ANDROID_TOOLS_URL \
+  && unzip -qq -d "$ANDROID_SDK_ROOT" android_tools.zip \
+  && rm android_tools.zip \
+  && mkdir -p $ANDROID_SDK_ROOT/cmdline-tools/tools \
+  && mv $ANDROID_SDK_ROOT/cmdline-tools/bin $ANDROID_SDK_ROOT/cmdline-tools/tools \
+  && mv $ANDROID_SDK_ROOT/cmdline-tools/lib $ANDROID_SDK_ROOT/cmdline-tools/tools
+
+ENV ANDROID_VERSION="31"
+ENV ANDROID_BUILD_TOOLS_VERSION="32.0.0"
+ENV ANDROID_PLATFORM_TOOLS_VERSION="33.0.0"
+ENV ANDROID_EMULATOR_VERSION="31.2.10"
+ENV ANDROID_ARCHITECTURE="x86_64"
+
+# Accept sdk licenses
+RUN yes "y" | sdkmanager "build-tools;$ANDROID_BUILD_TOOLS_VERSION" \
+  && yes "y" | sdkmanager "platforms;android-$ANDROID_VERSION"
+#   && yes "y" | sdkmanager "platform-tools"
+#   && yes "y" | sdkmanager "emulator"
+#   && yes "y" | sdkmanager "system-images;android-$ANDROID_VERSION;google_apis_playstore;$ANDROID_ARCHITECTURE"
+
+RUN sdkmanager --install "cmdline-tools;latest"
+
+# Flutter
+RUN yes "y" | flutter doctor --android-licenses \
+  && flutter doctor -v
+
+# Set working directory (keep permission)
+RUN mkdir -p /home/$USER/project
+WORKDIR /home/$USER/project
+
+COPY --chown=$USER:$USER_GRP . .
+
+# Build for Android
+RUN flutter clean \
+  && flutter pub get \
+  && flutter build apk \
+  && flutter build appbundle
+
+##
+#   Deploys steps
+##
+FROM alpine:3.16
+
+# Set working directory
+WORKDIR /app
+
+# Copy apk file
+COPY --from=builder /home/flutter/project/build/app/outputs/flutter-apk/app-release.apk release.apk
