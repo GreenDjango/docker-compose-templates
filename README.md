@@ -32,6 +32,7 @@ See [Docker Compose Documentation](https://docs.docker.com/compose/).
 |✅|[**android-builder**](android-builder)|Android APK builder (with capacitorjs or flutter).
 |✅|[**elixir-postgres**](elixir-postgres)|Elixir app build with postgres db.
 |WIP|[**laravel-mysql8**](laravel-mysql8)|Php Laravel with mysql8 and phpmyadmin.
+|✅|[**nextjs**](nextjs)|Hybrid static & server rendering with next.js react framework.
 |✅|[**nginx-pwa**](nginx-pwa)|Static PWA (vue, react, svelte...) serve with nginx.
 |✅|[**passbolt**](passbolt)|Passbolt is an open source password manager designed for team collaboration. Securely generate, store, manage and monitor your team credentials.
 |✅|[**rust-postgres**](rust-postgres)|Rust server build with postgres db.
