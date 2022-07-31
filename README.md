@@ -31,6 +31,7 @@ See [Docker Compose Documentation](https://docs.docker.com/compose/).
 |:---:|:---:|:---|
 |✅|[**android-builder**](android-builder)|Android APK builder (with capacitorjs or flutter).
 |✅|[**elixir-postgres**](elixir-postgres)|Elixir app build with postgres db.
+|✅|[**harbor**](harbor)|Harbor is an open source registry for Docker and Kubernetes that secures artifacts with policies and role-based access control.
 |WIP|[**laravel-mysql8**](laravel-mysql8)|Php Laravel with mysql8 and phpmyadmin.
 |✅|[**nextjs**](nextjs)|Hybrid static & server rendering with next.js react framework.
 |✅|[**nginx-pwa**](nginx-pwa)|Static PWA (vue, react, svelte...) serve with nginx.

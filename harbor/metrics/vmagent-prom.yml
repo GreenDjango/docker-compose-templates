@@ -1,0 +1,56 @@
+# This file is compatible with Prometheus configuration file for "global" and "scrape_configs" sections.
+# See https://github.com/VictoriaMetrics/VictoriaMetrics/blob/master/app/vmagent/README.md#how-to-collect-metrics-in-prometheus-format
+
+global:
+  external_labels:
+    provider: voltron-harbor
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: "vmagent"
+    scheme: "http"
+    static_configs:
+      - targets: ["localhost:8429"]
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: ".*"
+        target_label: instance
+        replacement: "vmagent"
+
+  - job_name: "node-exporter"
+    static_configs:
+      - targets: ["node-exporter:9100"]
+
+  - job_name: "cadvisor"
+    static_configs:
+      - targets: ["cadvisor:8080"]
+
+  - job_name: 'harbor-exporter'
+    scrape_interval: 20s
+    static_configs:
+      # Scrape metrics from the Harbor exporter component
+      - targets: ['proxy:9090']
+
+  - job_name: 'harbor-core'
+    scrape_interval: 20s
+    params:
+      # Scrape metrics from the Harbor core component
+      comp: ['core']
+    static_configs:
+      - targets: ['proxy:9090']
+
+  - job_name: 'harbor-registry'
+    scrape_interval: 20s
+    params:
+      # Scrape metrics from the Harbor registry component
+      comp: ['registry']
+    static_configs:
+      - targets: ['proxy:9090']
+
+  - job_name: 'harbor-jobservice'
+    scrape_interval: 20s
+    params:
+      # Scrape metrics from the Harbor jobservice component
+      comp: ['jobservice']
+    static_configs:
+      - targets: ['proxy:9090']

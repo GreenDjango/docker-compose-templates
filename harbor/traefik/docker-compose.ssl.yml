@@ -1,0 +1,31 @@
+services:
+  reverse-proxy:
+    command:
+      - "--api.dashboard=true"
+      # Provider
+      - "--providers.docker"
+      - "--providers.docker.exposedByDefault=false"
+      - "--providers.docker.network=reverse-proxy-traefik"
+      # Entrypoints
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      # Redirection
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      - "--entrypoints.web.http.redirections.entrypoint.permanent=true"
+      # Certificates
+      - "--certificatesresolvers.sslresolver.acme.caserver=${CA_SERVER}"
+      - "--certificatesresolvers.sslresolver.acme.email=${LETS_ENCRYPT_EMAIL}"
+      - "--certificatesresolvers.sslresolver.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.sslresolver.acme.storage=/etc/traefik/acme/acme.json"
+    ports:
+      - "443:443" # HTTPS
+    labels:
+      # [SSL]
+      - "traefik.http.routers.reverse-proxy.tls=true"
+      - "traefik.http.routers.reverse-proxy.tls.certresolver=sslresolver"
+    volumes:
+      - certs:/etc/traefik/acme # SSL certs
+
+volumes:
+  certs:
