@@ -1,7 +1,7 @@
 # Server
 
 # set builder image
-FROM node:14.15-alpine AS builder
+FROM node:16-alpine AS builder
 
 # set the working directory in the container
 WORKDIR /build
@@ -19,7 +19,7 @@ COPY ./ ./
 RUN npm run build
 
 # set base image (host OS)
-FROM node:14.15-alpine
+FROM node:16-alpine
 
 # set the working directory in the container
 WORKDIR /code
